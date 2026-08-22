@@ -2,6 +2,7 @@
 # IMPLEMENTATION OF SYMBOL TABLE 
 ## Register Number : 212225040356
 ## Name : SAHANA S
+## Date : 18.07.2026
 
 ## AIM   
 To write a C program to implement a symbol table.
