@@ -19,58 +19,41 @@ To write a C program to implement a symbol table.
 
 ## PROGRAM
 ```
- #include <stdio.h>
-    #include <stdlib.h>   
-    #include <ctype.h>
-    #include <string.h>
-    
-    #define MAX_EXPRESSION_SIZE 100
-    
-    int main() {
-        int i = 0, j = 0, x = 0, n;
-        void *add[20];   // store addresses
-        char b[MAX_EXPRESSION_SIZE], d[20], c;
-    
-        printf("Enter the Expression terminated by $: ");
-        while ((c = getchar()) != '$' && i < MAX_EXPRESSION_SIZE - 1) {
-            b[i++] = c;
-        }
-        b[i] = '\0';   // Null terminate
-        n = i - 1;
-    
-        printf("Given Expression: %s\n", b);
-    
-        printf("\nSymbol Table\n");
-        printf("Symbol\taddr\ttype\n");
-    
-        for (j = 0; j <= n; j++) {
-            c = b[j];
-            if (isalpha((unsigned char)c)) {
-                if (j == n) {
-                    void *p = malloc(sizeof(char));
-                    add[x] = p;
-                    d[x] = c;
-                    printf("%c\t%p\tidentifier\n", c, p);
-                    x++;
-                } else {
-                    char ch = b[j + 1];
-                    if (ch == '+' || ch == '-' || ch == '*' || ch == '=' || ch == '/' || ch == ';') {
-                        void *p = malloc(sizeof(char));
-                        add[x] = p;
-                        d[x] = c;
-                        printf("%c\t%p\tidentifier\n", c, p);
-                        x++;
-                    }
-                }
-            }
-        }
-    
-        return 0;  
-    }
+%{
+#include <stdio.h>
+#include <ctype.h>
+%}
+
+%%
+
+"if"        { printf("Keyword: %s\n", yytext); }
+"else"      { printf("Keyword: %s\n", yytext); }
+"while"     { printf("Keyword: %s\n", yytext); }
+"for"       { printf("Keyword: %s\n", yytext); }
+
+[0-9]+      { printf("Number: %s\n", yytext); }
+[a-zA-Z_][a-zA-Z0-9_]*   { printf("Identifier: %s\n", yytext); }
+
+"=="|"="    { printf("Symbol: %s\n", yytext); }
+"+"|"-"|"*"|"/" { printf("Symbol: %s\n", yytext); }
+
+[ \t\n]     ;   // Ignore whitespace
+.           { printf("Unknown: %s\n", yytext); }
+
+%%
+
+int main(int argc, char **argv) {
+    yylex();
+    return 0;
+}
+
+int yywrap() {
+    return 1;
+}
 ```
 ## OUTPUT 
 
-<img width="687" height="422" alt="image" src="https://github.com/user-attachments/assets/1be7b82e-81ef-4a95-b656-5ea9229dad0f" />
+<img width="682" height="665" alt="image" src="https://github.com/user-attachments/assets/bfee4e95-6c02-4008-b47c-16c88205c60c" />
 
 
 ## RESULT
