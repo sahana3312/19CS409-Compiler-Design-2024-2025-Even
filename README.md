@@ -19,63 +19,92 @@ To write a C program to implement a symbol table.
 
 ## PROGRAM
 ```
-#include<stdio.h>
-#include<ctype.h>
-#include<string.h>
-#include<stdlib.h>
-#define MAX_EXPRESSION_SIZE 100
-int main() {
-    int i = 0, j = 0, x = 0, n, flag = 0;
-    void *add[5]; // Array to store addresses
-    char b[MAX_EXPRESSION_SIZE], d[MAX_EXPRESSION_SIZE], c, srch;
-    
-    printf("Enter the Expression terminated by $: ");
-    while ((c = getchar()) != '$' && i < MAX_EXPRESSION_SIZE - 1) {
-        b[i++] = c;
-    }
-    b[i] = '\0'; 
-    n = i; 
-    printf("Given Expression: %s\n", b);
-    printf("\nSymbol Table\n");
-    printf("Symbol\taddr\ttype\n");
-    for (j = 0; j < n; j++) {
-        c = b[j];
-        if (isalpha((unsigned char)c)) { 
-            if (j == n - 1 || !isalpha(b[j + 1])) { 
-                void *p = malloc(sizeof(char));
-                add[x] = p; 
-                d[x] = c; 
-                printf("%c\t%p\tidentifier\n", c, p);
-                x++;
-            }
+%{
+#include "exp3cd.tab.h"
+#include <stdio.h>
+%}
+
+%%
+
+[0-9]+                  { return NUMBER; }
+[a-zA-Z][a-zA-Z0-9]*    { return ID; }
+
+"+"     { return '+'; }
+"-"     { return '-'; }
+"*"     { return '*'; }
+"/"     { return '/'; }
+"("     { return '('; }
+")"     { return ')'; }
+
+[ \t]   ;          /* ignore spaces */
+\n      return 0;
+
+.       return yytext[0];
+
+%%
+
+int yywrap()
+{
+    return 1;
+}
+%{
+#include <stdio.h>
+#include <stdlib.h>
+
+int yylex();
+void yyerror(const char *s);
+
+int valid = 1;
+%}
+
+%token NUMBER ID
+
+%%
+
+statement:
+        expr
+        {
+            if(valid)
+                printf("\nValid Arithmetic Expression\n");
         }
-    }
-    getchar();
-    printf("\nThe symbol to be searched: ");
-    srch = getchar();
-    for (i = 0; i < x; i++) {
-        if (srch == d[i]) {
-            printf("Symbol Found\n");
-            printf("%c@address %p\n", srch, add[i]);
-            flag = 1;
-            break;
-        }
-    }
-    if (flag == 0) {
-        printf("Symbol Not Found\n");
-    }
-    for (i = 0; i < x; i++) {
-        free(add[i]);
-    }
+        ;
+
+expr:
+        expr '+' term
+      | expr '-' term
+      | term
+      ;
+
+term:
+        term '*' factor
+      | term '/' factor
+      | factor
+      ;
+
+factor:
+        '(' expr ')'
+      | NUMBER
+      | ID
+      ;
+
+%%
+
+int main()
+{
+    printf("Enter Expression:\n");
+    yyparse();
     return 0;
+}
+
+void yyerror(const char *s)
+{
+    valid = 0;
+    printf("\nInvalid Arithmetic Expression\n");
 }
 ```
 ## OUTPUT 
 
-<img width="1547" height="901" alt="image" src="https://github.com/user-attachments/assets/4045cb73-f484-4d98-a414-b7ed35e750cb" />
-
-<img width="1532" height="881" alt="image" src="https://github.com/user-attachments/assets/7675d2cd-48d0-442e-ae07-1dfcdb86d66a" />
-
+<img width="1337" height="517" alt="image" src="https://github.com/user-attachments/assets/5d694250-7077-4516-ae62-3f06b64544d1" />
 
 
 ## RESULT
