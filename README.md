@@ -1,110 +1,79 @@
-# Ex. No : 3
-# RECOGNITION OF A VALID ARITHMETIC EXPRESSION THAT USES
+# Ex. No : 1
+# IMPLEMENTATION OF SYMBOL TABLE
 ## Register Number : 212225040356
 ## Name : SAHANA S
-## Date : 20.07.2026
 
 ## AIM   
-To write a yacc program to recognize a valid arithmetic expression that uses operator +,- ,* and /.
+To write a C program to implement a symbol table.
 
 ## ALGORITHM
 1)Start the program.
-2)Write a program in the vi editor and save it with .l extension.
-3)In the lex program, write the translation rules for the operators =,+,-,*,/ and for the identifier.
-4)Write a program in the vi editor and save it with .y extension.
-5)Compile the lex program with lex compiler to produce output file as lex.yy.c. eg $ lex filename.l
-6)Compile the yacc program with yacc compiler to produce output file as y.tab.c. eg $ yacc –d arith_id.y
-7)Compile these with the C compiler as gcc lex.yy.c y.tab.c
-8)Enter an arithmetic expression as input and the tokens are identified as output.
+2)Get the input from the user with the terminating symbol ‘$’.
+3)Allocate memory for the variable by dynamic memory allocation function.
+4)If the next character of the symbol is an operator then only the memory is allocated.
+5)While reading, the input symbol is inserted into symbol table along with its memory address.
+6)The steps are repeated till ‘$’ is reached.
+7)To reach a variable, enter the variable to be searched and symbol table has been checked for corresponding variable, the variable along with its address is displayed as result.
+8)Stop the program.
 
 ## PROGRAM
 ```
-%{
-#include "exp3cd.tab.h"
-#include <stdio.h>
-%}
-
-%%
-
-[0-9]+                  { return NUMBER; }
-[a-zA-Z][a-zA-Z0-9]*    { return ID; }
-
-"+"     { return '+'; }
-"-"     { return '-'; }
-"*"     { return '*'; }
-"/"     { return '/'; }
-"("     { return '('; }
-")"     { return ')'; }
-
-[ \t]   ;          /* ignore spaces */
-\n      return 0;
-
-.       return yytext[0];
-
-%%
-
-int yywrap()
-{
-    return 1;
-}
-%{
-#include <stdio.h>
-#include <stdlib.h>
-
-int yylex();
-void yyerror(const char *s);
-
-int valid = 1;
-%}
-
-%token NUMBER ID
-
-%%
-
-statement:
-        expr
-        {
-            if(valid)
-                printf("\nValid Arithmetic Expression\n");
+ #include <stdio.h>
+    #include <stdlib.h>   
+    #include <ctype.h>
+    #include <string.h>
+    
+    #define MAX_EXPRESSION_SIZE 100
+    
+    int main() {
+        int i = 0, j = 0, x = 0, n;
+        void *add[20];   // store addresses
+        char b[MAX_EXPRESSION_SIZE], d[20], c;
+    
+        printf("Enter the Expression terminated by $: ");
+        while ((c = getchar()) != '$' && i < MAX_EXPRESSION_SIZE - 1) {
+            b[i++] = c;
         }
-        ;
-
-expr:
-        expr '+' term
-      | expr '-' term
-      | term
-      ;
-
-term:
-        term '*' factor
-      | term '/' factor
-      | factor
-      ;
-
-factor:
-        '(' expr ')'
-      | NUMBER
-      | ID
-      ;
-
-%%
-
-int main()
-{
-    printf("Enter Expression:\n");
-    yyparse();
-    return 0;
-}
-
-void yyerror(const char *s)
-{
-    valid = 0;
-    printf("\nInvalid Arithmetic Expression\n");
-}
+        b[i] = '\0';   // Null terminate
+        n = i - 1;
+    
+        printf("Given Expression: %s\n", b);
+    
+        printf("\nSymbol Table\n");
+        printf("Symbol\taddr\ttype\n");
+    
+        for (j = 0; j <= n; j++) {
+            c = b[j];
+            if (isalpha((unsigned char)c)) {
+                if (j == n) {
+                    void *p = malloc(sizeof(char));
+                    add[x] = p;
+                    d[x] = c;
+                    printf("%c\t%p\tidentifier\n", c, p);
+                    x++;
+                } else {
+                    char ch = b[j + 1];
+                    if (ch == '+' || ch == '-' || ch == '*' || ch == '=' || ch == '/' || ch == ';') {
+                        void *p = malloc(sizeof(char));
+                        add[x] = p;
+                        d[x] = c;
+                        printf("%c\t%p\tidentifier\n", c, p);
+                        x++;
+                    }
+                }
+            }
+        }
+    
+        return 0;  
+    }
 ```
 ## OUTPUT 
 
-<img width="1337" height="517" alt="image" src="https://github.com/user-attachments/assets/e6d40c83-60ae-4fc6-970f-aff609c39745" />
+<img width="597" height="381" alt="image" src="https://github.com/user-attachments/assets/329c3ed8-5aea-4e05-91bc-496874e76ab5" />
+
+RESULT
+The program to implement a symbol table is executed and the output is verified. 
+
 
 
 ## RESULT
